@@ -4,6 +4,8 @@
 package adf
 
 import (
+	"fmt"
+
 	"github.com/berkmancenter/ridge"
 	"github.com/gonum/matrix/mat64"
 	"github.com/gonum/stat"
@@ -12,11 +14,13 @@ import (
 )
 
 const (
-	LPenalty      = 0.0001 // L penalty to pass to ridge regression
-	DefaultPValue = -3.45  // Test p-value threshold
+	// LPenalty is the value used for ridge regression.
+	LPenalty = 0.0001
+	// DefaultPValue is the p-value threshold used by default if no one is specified.
+	DefaultPValue = -3.45
 )
 
-// An instance of an ADF test
+// ADF is an Augmented Dickey-Fuller test.
 type ADF struct {
 	Series          []float64 // The time series to test
 	PValueThreshold float64   // The p-value threshold for the test
@@ -25,7 +29,10 @@ type ADF struct {
 }
 
 // New creates and returns a new ADF test.
-func New(series []float64, pvalue float64, lag int) *ADF {
+func New(series []float64, pvalue float64, lag int) (*ADF, error) {
+	if len(series) == 0 {
+		return nil, fmt.Errorf("series is empty")
+	}
 	if pvalue == 0 {
 		pvalue = DefaultPValue
 	}
@@ -34,7 +41,7 @@ func New(series []float64, pvalue float64, lag int) *ADF {
 	}
 	newSeries := make([]float64, len(series))
 	copy(newSeries, series)
-	return &ADF{Series: newSeries, PValueThreshold: pvalue, Lag: lag}
+	return &ADF{Series: newSeries, PValueThreshold: pvalue, Lag: lag}, nil
 }
 
 // Run runs the Augmented Dickey-Fuller test.
