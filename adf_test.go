@@ -1,10 +1,16 @@
 package adf
 
 import (
-	"github.com/gonum/plot"
-	"github.com/gonum/plot/plotter"
-	"github.com/gonum/plot/plotutil"
-	"github.com/gonum/plot/vg"
+	/*
+		"github.com/gonum/plot"
+		"github.com/gonum/plot/plotter"
+		"github.com/gonum/plot/plotutil"
+		"github.com/gonum/plot/vg"
+	*/
+	"gonum.org/v1/plot"
+	"gonum.org/v1/plot/plotter"
+	"gonum.org/v1/plot/plotutil"
+	"gonum.org/v1/plot/vg"
 
 	"encoding/csv"
 	"fmt"
@@ -18,7 +24,7 @@ func TestRun(t *testing.T) {
 		if test.skip {
 			continue
 		}
-		adf := New(test.series, test.pvalue, test.lag)
+		adf, _ := New(test.series, test.pvalue, test.lag)
 		adf.Run()
 		observed := adf.IsStationary()
 		//fmt.Printf("Expected: %v; Stat: %v; Lag: %v\n", test.expected, adf.Statistic, adf.Lag)
@@ -77,7 +83,7 @@ func xys(series []float64) plotter.XYs {
 func BenchmarkRun(b *testing.B) {
 	test := testCases[4]
 	for i := 0; i < b.N; i++ {
-		adf := New(test.series, test.pvalue, test.lag)
+		adf, _ := New(test.series, test.pvalue, test.lag)
 		adf.Run()
 	}
 }
